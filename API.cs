@@ -14,9 +14,11 @@ namespace CrappyPrizm
         private static readonly HttpClient Client = new HttpClient { BaseAddress = new Uri(Url) };
         #endregion
 
-        #region Functions
+        #region Methods
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
+        #endregion
 
+        #region Helpers
         private static async Task<T> MakeRequestAsync<T>(string type, params (string key, string value)[] parameters)
         {
             HttpResponseMessage response = await MakeRequestAsync(type, parameters);
