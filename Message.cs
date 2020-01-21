@@ -14,6 +14,11 @@
         #endregion
 
         #region Functions
+        public EncryptedMessage Encrypt(string publicKey, string secretPhrase)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override string ToString() => Text;
         public override int GetHashCode() => Text.GetHashCode();
         public override bool Equals(object? obj) => obj is Message message && message.Text == Text;
