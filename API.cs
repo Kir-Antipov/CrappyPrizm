@@ -16,6 +16,8 @@ namespace CrappyPrizm
 
         #region Methods
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
+
+        private static Task<BroadcastedTransaction?> BroadcastTransactionAsync(string attachment, string bytes) => MakeRequestAsync<BroadcastedTransaction?>("broadcastTransaction", ("prunableAttachmentJSON", attachment), ("transactionBytes", bytes));
         #endregion
 
         #region Helpers
