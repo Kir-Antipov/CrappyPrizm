@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace CrappyPrizm
 {
-    public class Transaction
+    public class BroadcastedTransaction
     {
         #region Var
         [JsonProperty("transaction")]
@@ -15,7 +15,7 @@ namespace CrappyPrizm
 
         #region Init
         [JsonConstructor]
-        public Transaction([JsonProperty("transaction")]BigInteger id, [JsonProperty("fullHash")]string hash)
+        public BroadcastedTransaction([JsonProperty("transaction")]BigInteger id, [JsonProperty("fullHash")]string hash)
         {
             Id = id;
             Hash = hash;
@@ -25,7 +25,7 @@ namespace CrappyPrizm
         #region Functions
         public override string ToString() => Hash;
         public override int GetHashCode() => Id.GetHashCode();
-        public override bool Equals(object? obj) => obj is Transaction transaction && transaction.Id == Id;
+        public override bool Equals(object? obj) => obj is BroadcastedTransaction transaction && transaction.Id == Id;
         #endregion
     }
 }
