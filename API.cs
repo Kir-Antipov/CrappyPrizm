@@ -15,6 +15,8 @@ namespace CrappyPrizm
         #endregion
 
         #region Functions
+        public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
+
         private static async Task<T> MakeRequestAsync<T>(string type, params (string key, string value)[] parameters)
         {
             HttpResponseMessage response = await MakeRequestAsync(type, parameters);
