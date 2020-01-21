@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Numerics;
 
 namespace CrappyPrizm
 {
@@ -6,7 +7,7 @@ namespace CrappyPrizm
     {
         #region Var
         [JsonProperty("account")]
-        public long Id { get; }
+        public BigInteger Id { get; }
 
         [JsonProperty("accountRS")]
         public string Address { get; }
@@ -25,7 +26,7 @@ namespace CrappyPrizm
 
         #region Init
         [JsonConstructor]
-        public Account( [JsonProperty("account")]long id,
+        public Account( [JsonProperty("account")]BigInteger id,
                         [JsonProperty("accountRS")]string address,
                         [JsonProperty("balanceNQT")]decimal coins,
                         [JsonProperty("publicKey")]string publicKey)
@@ -37,7 +38,7 @@ namespace CrappyPrizm
             PrivateKey = null;
         }
 
-        public Account(long id, string address, decimal coins, string publicKey, string privateKey)
+        public Account(BigInteger id, string address, decimal coins, string publicKey, string privateKey)
         {
             Id = id;
             Address = address;
