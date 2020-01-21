@@ -11,8 +11,11 @@ namespace CrappyPrizm
         [JsonProperty("accountRS")]
         public string Address { get; }
 
+        [JsonIgnore]
+        public decimal Balance => Convert.CoinsToAmount(Coins);
+
         [JsonProperty("balanceNQT")]
-        public decimal Balance { get; }
+        public decimal Coins { get; }
 
         [JsonProperty("publicKey")]
         public string PublicKey { get; }
@@ -24,21 +27,21 @@ namespace CrappyPrizm
         [JsonConstructor]
         public Account( [JsonProperty("account")]long id,
                         [JsonProperty("accountRS")]string address,
-                        [JsonProperty("balanceNQT")]decimal balance,
+                        [JsonProperty("balanceNQT")]decimal coins,
                         [JsonProperty("publicKey")]string publicKey)
         {
             Id = id;
             Address = address;
-            Balance = balance;
+            Coins = coins;
             PublicKey = publicKey;
             PrivateKey = null;
         }
 
-        public Account(long id, string address, decimal balance, string publicKey, string privateKey)
+        public Account(long id, string address, decimal coins, string publicKey, string privateKey)
         {
             Id = id;
             Address = address;
-            Balance = balance;
+            Coins = coins;
             PublicKey = publicKey;
             PrivateKey = privateKey;
         }
