@@ -1,6 +1,7 @@
 ﻿using System;
 using CrappyPrizm.Crypto;
 using System.Security.Cryptography;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace CrappyPrizm
 {
@@ -28,10 +29,10 @@ namespace CrappyPrizm
             byte[] salt = new byte[32];
             RandomNumberGenerator.GetBytes(salt);
 
-            using SHA256Managed sha256 = new SHA256Managed();
+            Sha256Digest sha256 = new Sha256Digest();
             for (int i = 0; i < sharedKey.Length; ++i)
                 sharedKey[i] ^= salt[i];
-            sharedKey = sha256.ComputeHash(sharedKey);
+            sharedKey = sha256.Digest(sharedKey);
 
             byte[] iv = new byte[16];
             RandomNumberGenerator.GetBytes(iv);

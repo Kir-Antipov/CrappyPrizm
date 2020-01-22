@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using CrappyPrizm.Crypto;
-using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto.Digests;
 
 namespace CrappyPrizm
@@ -53,8 +52,8 @@ namespace CrappyPrizm
 
         public static byte[] SecretPhraseToPrivateKey(string secretPhrase)
         {
-            using SHA256Managed sha = new SHA256Managed();
-            byte[] hash = sha.ComputeHash(StringToBytes(secretPhrase));
+            Sha256Digest sha = new Sha256Digest();
+            byte[] hash = sha.Digest(StringToBytes(secretPhrase));
             Curve25519.Clamp(hash);
             return hash;
         }
