@@ -51,7 +51,12 @@ namespace CrappyPrizm.Crypto
             Core(P, s, k, null);
         }
 
-        public static void Curve(byte[] Z, byte[] k, byte[] P) => Core(Z, null, k, P);
+        public static byte[] Curve(byte[] k, byte[] P)
+        {
+            byte[] z = new byte[32];
+            Core(z, null, k, P);
+            return z;
+        }
 
         public static bool Sign(byte[] v, byte[] h, byte[] x, byte[] s)
         {
