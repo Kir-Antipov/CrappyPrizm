@@ -23,7 +23,7 @@ namespace CrappyPrizm
         [JsonProperty("version.OrdinaryPayment")]
         public int OrdinaryPayment { get; }
 
-        [JsonProperty("version.EncryptedMessage")]
+        [JsonProperty("version.PublicKeyAnnouncement")]
         public int PublicKeyAnnouncement { get; }
 
         [JsonProperty("message")]
