@@ -41,17 +41,20 @@ namespace CrappyPrizm
             return new EncryptedMessage(AesEncrypt(compressed, sharedKey), salt, true, true);
         }
 
-        private static byte[] AesEncrypt(byte[] plaintext, byte[] key)
+        private static byte[] AesEncrypt(byte[] data, byte[] key)
         {
             byte[] iv = new byte[16];
             RandomNumberGenerator.GetBytes(iv);
+
             PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CbcBlockCipher(new AesEngine()));
-            ParametersWithIV ivAndKey = new ParametersWithIV(new KeyParameter(key), iv);
-            aes.Init(true, ivAndKey);
-            byte[] output = new byte[aes.GetOutputSize(plaintext.Length)];
-            int ciphertextLength = aes.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
+            aes.Init(true, new ParametersWithIV(new KeyParameter(key), iv));
+
+            byte[] output = new byte[aes.GetOutputSize(data.Length)];
+            int ciphertextLength = aes.ProcessBytes(data, 0, data.Length, output, 0);
+
             ciphertextLength += aes.DoFinal(output, ciphertextLength);
             byte[] result = new byte[iv.Length + ciphertextLength];
+
             Array.Copy(iv, 0, result, 0, iv.Length);
             Array.Copy(output, 0, result, iv.Length, ciphertextLength);
             return result;
