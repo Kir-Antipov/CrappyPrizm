@@ -79,6 +79,8 @@ namespace CrappyPrizm
             return shortArray;
         }
 
+        public static byte[] PrivateAndPublicToSharedKey(byte[] privateKey, byte[] publicKey) => Curve25519.Curve(privateKey, publicKey);
+
         public static byte[] SecretPhraseToPrivateKey(string secretPhrase)
         {
             using SHA256Managed sha = new SHA256Managed();
