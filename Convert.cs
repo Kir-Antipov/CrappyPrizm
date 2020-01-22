@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using CrappyPrizm.Crypto;
 using System.Security.Cryptography;
 
 namespace CrappyPrizm
@@ -81,19 +82,11 @@ namespace CrappyPrizm
         {
             using SHA256Managed sha = new SHA256Managed();
             byte[] hash = sha.ComputeHash(StringToBytes(secretPhrase));
-            Curve25519Clamp(hash);
+            Curve25519.Clamp(hash);
             return hash;
         }
 
         public static string SecretPhraseToPrivateKeyHex(string secretPhrase) => BytesToHex(SecretPhraseToPrivateKey(secretPhrase));
-        #endregion
-
-        #region Helpers
-        private static void Curve25519Clamp(byte[] curve)
-        {
-            curve[0] = (byte)(curve[0] & 0xF8);
-            curve[31] = (byte)((curve[31] & 0x7F) | 0x40);
-        }
         #endregion
     }
 }
