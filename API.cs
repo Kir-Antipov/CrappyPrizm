@@ -23,23 +23,23 @@ namespace CrappyPrizm
             EncryptedMessage encryptedToSelfMessage = comment.Encrypt(publicKey, secretPhrase);
 
 
-            return MakeRequestAsync<RawTransaction?>("sendMoney",    ("deadline", "1440"),
-                                                    ("amountNQT", Convert.AmountToCoins(amount).ToString()),
-                                                    ("feeNQT", "5"),
-                                                    ("messageToEncryptIsText", "true"),
-                                                    ("messageToEncryptToSelfIsText", "true"),
-                                                    ("permanent_message", "1"),
-                                                    ("phased", "2"),
-                                                    ("phasingHashedSecret", ""),
-                                                    ("phasingHashedSecretAlgorithm", "2"),
-                                                    ("phasingLinkedFullHash", ""),
-                                                    ("publicKey", publicKey),
-                                                    ("recipient", recipient),
-                                                    ("recipientPublicKey", recipientPublicKey),
-                                                    ("encryptToSelfMessageData", encryptedToSelfMessage.HexData),
-                                                    ("encryptToSelfMessageNonce", encryptedToSelfMessage.HexSalt),
-                                                    ("encryptedMessageData", encryptedMessage.HexData),
-                                                    ("encryptedMessageNonce", encryptedMessage.HexSalt));
+            return MakeRequestAsync<RawTransaction?>("sendMoney",   ("deadline", "1440"),
+                                                                    ("amountNQT", Convert.AmountToCoins(amount).ToString()),
+                                                                    ("feeNQT", "5"),
+                                                                    ("messageToEncryptIsText", "true"),
+                                                                    ("messageToEncryptToSelfIsText", "true"),
+                                                                    ("permanent_message", "1"),
+                                                                    ("phased", "2"),
+                                                                    ("phasingHashedSecret", ""),
+                                                                    ("phasingHashedSecretAlgorithm", "2"),
+                                                                    ("phasingLinkedFullHash", ""),
+                                                                    ("publicKey", publicKey),
+                                                                    ("recipient", recipient),
+                                                                    ("recipientPublicKey", recipientPublicKey),
+                                                                    ("encryptToSelfMessageData", encryptedToSelfMessage.HexData),
+                                                                    ("encryptToSelfMessageNonce", encryptedToSelfMessage.HexSalt),
+                                                                    ("encryptedMessageData", encryptedMessage.HexData),
+                                                                    ("encryptedMessageNonce", encryptedMessage.HexSalt));
         }
 
         private static Task<BroadcastedTransaction?> BroadcastTransactionAsync(string attachment, string bytes) => MakeRequestAsync<BroadcastedTransaction?>("broadcastTransaction", ("prunableAttachmentJSON", attachment), ("transactionBytes", bytes));
