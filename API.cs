@@ -17,7 +17,7 @@ namespace CrappyPrizm
         #region Methods
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
 
-        private static Task<RawTransaction?> SendMoney(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
+        private static Task<RawTransaction?> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
         {
             EncryptedMessage encryptedMessage = comment.Encrypt(recipientPublicKey, secretPhrase);
             EncryptedMessage encryptedToSelfMessage = comment.Encrypt(publicKey, secretPhrase);
