@@ -47,14 +47,7 @@ namespace CrappyPrizm
             return bytes;
         }
 
-        // FIX
-        public static byte[] StringToBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length];
-            for (int i = 0; i < str.Length; ++i)
-                bytes[i] = (byte)str[i];
-            return bytes;
-        }
+        public static byte[] StringToBytes(string str) => Encoding.UTF8.GetBytes(str);
 
         public static byte[] PrivateAndPublicToSharedKey(byte[] privateKey, byte[] publicKey) => Curve25519.Curve(privateKey, publicKey);
 
