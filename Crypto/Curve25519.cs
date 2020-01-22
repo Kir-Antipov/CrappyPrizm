@@ -45,7 +45,7 @@ namespace CrappyPrizm.Crypto
             k[0] &= 0xF8;
         }
 
-        public static void Keygen(byte[] P, byte[] s, byte[] k)
+        public static void Keygen(byte[] P, byte[]? s, byte[] k)
         {
             Clamp(k);
             Core(P, s, k, null);
