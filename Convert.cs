@@ -46,22 +46,6 @@ namespace CrappyPrizm
             return bytes;
         }
 
-        public static string ShortToHex(ushort[] shorts)
-        {
-            const string alphabet = "0123456789abcdef";
-
-            StringBuilder hex = new StringBuilder(shorts.Length << 2);
-            for (int i = 0; i < shorts.Length; ++i)
-            {
-                ushort s = shorts[i];
-                hex.Append(alphabet[(s >> 4) & 0x0f]);
-                hex.Append(alphabet[s & 0x0f]);
-                hex.Append(alphabet[(s >> 12) & 0x0f]);
-                hex.Append(alphabet[(s >> 8) & 0x0f]);
-            }
-            return hex.ToString();
-        }
-
         // FIX
         public static byte[] StringToBytes(string str)
         {
@@ -69,14 +53,6 @@ namespace CrappyPrizm
             for (int i = 0; i < str.Length; ++i)
                 bytes[i] = (byte)str[i];
             return bytes;
-        }
-
-        public static ushort[] ByteArrayToShortArray(byte[] bytes)
-        {
-            ushort[] shortArray = new ushort[bytes.Length >> 1];
-            for (int i = 0; i < shortArray.Length; ++i)
-                shortArray[i] = (ushort)(bytes[i * 2] | (bytes[i * 2 + 1] << 8));
-            return shortArray;
         }
 
         public static byte[] PrivateAndPublicToSharedKey(byte[] privateKey, byte[] publicKey) => Curve25519.Curve(privateKey, publicKey);
