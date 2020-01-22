@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace CrappyPrizm
 {
@@ -25,6 +26,21 @@ namespace CrappyPrizm
             Details = details;
             Bytes = bytes;
         }
+        #endregion
+
+        #region Functions
+        public Transaction Prepare(BroadcastedTransaction broadcasted, string recipientPublicKey) => new Transaction
+        (
+            broadcasted.Id,
+            broadcasted.Hash,
+            new Account(Details.Sender, Details.SenderAddress, Details.SenderPublicKey),
+            new Account(Details.Recipient, Details.RecipientAddress, recipientPublicKey),
+            Details.Coins,
+            Details.CoinsFee,
+            new Block(Details.BlockId, Details.BlockHeight, Details.Height),
+            DateTime.UnixEpoch.AddSeconds(Details.Timestamp * 10 + 1108803690), // I don't know what the f*ck is it!!!
+            DateTime.UtcNow.AddMinutes(Details.Deadline)
+        );
         #endregion
     }
 }
