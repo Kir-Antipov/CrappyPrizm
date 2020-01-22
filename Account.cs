@@ -13,7 +13,7 @@ namespace CrappyPrizm
         public string Address { get; }
 
         [JsonIgnore]
-        public decimal Balance => Convert.CoinsToAmount(Coins);
+        public decimal Balance => Coins == -1 ? -1 : Convert.CoinsToAmount(Coins);
 
         [JsonProperty("balanceNQT")]
         public decimal Coins { get; }
@@ -46,6 +46,10 @@ namespace CrappyPrizm
             PublicKey = publicKey;
             PrivateKey = privateKey;
         }
+
+        public Account(BigInteger id, string address, string publicKey) : this(id, address, -1, publicKey) { }
+
+        public Account(BigInteger id, string address, string publicKey, string privateKey) : this(id, address, -1, publicKey, privateKey) { }
         #endregion
 
         #region Functions
