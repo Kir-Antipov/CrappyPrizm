@@ -17,6 +17,19 @@ namespace CrappyPrizm
         #region Methods
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
 
+        public static async Task<Transaction?> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
+        {
+            RawTransaction? raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
+            if (raw is null)
+                return null;
+
+            BroadcastedTransaction? broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), raw.Bytes);
+            if (broadcasted is null)
+                return null;
+
+            return raw.Prepare(broadcasted, recipientPublicKey);
+        }
+
         private static Task<RawTransaction?> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
         {
             EncryptedMessage encryptedMessage = comment.Encrypt(recipientPublicKey, secretPhrase);
