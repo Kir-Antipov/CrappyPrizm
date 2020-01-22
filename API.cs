@@ -23,7 +23,7 @@ namespace CrappyPrizm
             if (raw is null)
                 return null;
 
-            BroadcastedTransaction? broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), raw.Bytes);
+            BroadcastedTransaction? broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), Convert.BytesToHex(Convert.UnsignedBytesToSigned(Convert.HexToBytes(raw.Bytes), secretPhrase)));
             if (broadcasted is null)
                 return null;
 

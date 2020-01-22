@@ -2,6 +2,7 @@
 using System.Text;
 using CrappyPrizm.Crypto;
 using System.Security.Cryptography;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace CrappyPrizm
 {
@@ -66,6 +67,38 @@ namespace CrappyPrizm
         }
 
         public static string SecretPhraseToPrivateKeyHex(string secretPhrase) => BytesToHex(SecretPhraseToPrivateKey(secretPhrase));
+
+        public static byte[] UnsignedBytesToSigned(byte[] unsignedBytes, string secretPhrase)
+        {
+            byte[] P = new byte[32];
+            byte[] s = new byte[32];
+
+            Sha256Digest digest = new Sha256Digest();
+            Curve25519.Keygen(P, s, digest.Digest(StringToBytes(secretPhrase)));
+
+            byte[] m = digest.Digest(unsignedBytes);
+
+            digest.Update(m);
+            byte[] x = digest.Digest(s);
+            byte[] Y = new byte[32];
+            Curve25519.Keygen(Y, null, x);
+
+            digest.Update(m);
+            byte[] h = digest.Digest(Y);
+
+            byte[] v = new byte[32];
+            Curve25519.Sign(v, h, x, s);
+
+            byte[] signature = new byte[64];
+            Array.Copy(v, 0, signature, 0, 32);
+            Array.Copy(h, 0, signature, 32, 32);
+
+            byte[] signedBytes = new byte[unsignedBytes.Length];
+            Array.Copy(unsignedBytes, signedBytes, unsignedBytes.Length);
+            Array.Copy(signature, 0, signedBytes, 96, signature.Length);
+
+            return signedBytes;
+        }
         #endregion
     }
 }
