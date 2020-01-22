@@ -62,6 +62,7 @@ namespace CrappyPrizm
             return hex.ToString();
         }
 
+        // FIX
         public static byte[] StringToBytes(string str)
         {
             byte[] bytes = new byte[str.Length];
