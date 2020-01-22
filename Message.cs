@@ -1,7 +1,11 @@
 ﻿using System;
 using CrappyPrizm.Crypto;
 using System.Security.Cryptography;
+using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Paddings;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace CrappyPrizm
 {
@@ -29,21 +33,28 @@ namespace CrappyPrizm
             byte[] salt = new byte[32];
             RandomNumberGenerator.GetBytes(salt);
 
-            Sha256Digest sha256 = new Sha256Digest();
             for (int i = 0; i < sharedKey.Length; ++i)
                 sharedKey[i] ^= salt[i];
+            Sha256Digest sha256 = new Sha256Digest();
             sharedKey = sha256.Digest(sharedKey);
 
+            return new EncryptedMessage(AesEncrypt(compressed, sharedKey), salt, true, true);
+        }
+
+        private static byte[] AesEncrypt(byte[] plaintext, byte[] key)
+        {
             byte[] iv = new byte[16];
             RandomNumberGenerator.GetBytes(iv);
-
-            byte[] encrypted = new AesManaged().CreateEncryptor(sharedKey, iv).TransformFinalBlock(compressed, 0, compressed.Length);
-
-            byte[] data = new byte[iv.Length + encrypted.Length];
-            Array.Copy(iv, data, iv.Length);
-            Array.Copy(encrypted, 0, data, iv.Length, encrypted.Length);
-
-            return new EncryptedMessage(data, salt, true, true);
+            PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CbcBlockCipher(new AesEngine()));
+            ParametersWithIV ivAndKey = new ParametersWithIV(new KeyParameter(key), iv);
+            aes.Init(true, ivAndKey);
+            byte[] output = new byte[aes.GetOutputSize(plaintext.Length)];
+            int ciphertextLength = aes.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
+            ciphertextLength += aes.DoFinal(output, ciphertextLength);
+            byte[] result = new byte[iv.Length + ciphertextLength];
+            Array.Copy(iv, 0, result, 0, iv.Length);
+            Array.Copy(output, 0, result, iv.Length, ciphertextLength);
+            return result;
         }
 
         public override string ToString() => Text;
