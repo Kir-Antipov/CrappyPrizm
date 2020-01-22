@@ -1,9 +1,15 @@
-﻿namespace CrappyPrizm
+﻿using System;
+using CrappyPrizm.Crypto;
+using System.Security.Cryptography;
+
+namespace CrappyPrizm
 {
     public class Message
     {
         #region Var
         public string Text { get; }
+
+        private static readonly RNGCryptoServiceProvider RandomNumberGenerator = new RNGCryptoServiceProvider();
         #endregion
 
         #region Init
@@ -16,7 +22,27 @@
         #region Functions
         public EncryptedMessage Encrypt(string publicKey, string secretPhrase)
         {
-            throw new System.NotImplementedException();
+            byte[] sharedKey = Convert.PrivateAndPublicToSharedKey(Convert.SecretPhraseToPrivateKey(secretPhrase), Convert.HexToBytes(publicKey));
+            byte[] compressed = GZip.Compress(Convert.StringToBytes(Text));
+
+            byte[] salt = new byte[32];
+            RandomNumberGenerator.GetBytes(salt);
+
+            using SHA256Managed sha256 = new SHA256Managed();
+            for (int i = 0; i < sharedKey.Length; ++i)
+                sharedKey[i] ^= salt[i];
+            sharedKey = sha256.ComputeHash(sharedKey);
+
+            byte[] iv = new byte[16];
+            RandomNumberGenerator.GetBytes(iv);
+
+            byte[] encrypted = new AesManaged().CreateEncryptor(sharedKey, iv).TransformFinalBlock(compressed, 0, compressed.Length);
+
+            byte[] data = new byte[iv.Length + encrypted.Length];
+            Array.Copy(iv, data, iv.Length);
+            Array.Copy(encrypted, 0, data, iv.Length, encrypted.Length);
+
+            return new EncryptedMessage(data, salt, true, true);
         }
 
         public override string ToString() => Text;
