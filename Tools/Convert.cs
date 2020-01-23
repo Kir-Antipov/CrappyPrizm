@@ -58,6 +58,18 @@ namespace CrappyPrizm.Tools
             return hash;
         }
 
+        public static byte[] SecretPhraseToPublicKey(string secretPhrase)
+        {
+            byte[] bytes = StringToBytes(secretPhrase);
+            Sha256Digest digest = new Sha256Digest();
+            bytes = digest.Digest(bytes);
+
+            byte[] publicKey = new byte[32];
+            Curve25519.Keygen(publicKey, null, bytes);
+
+            return publicKey;
+        }
+
         public static byte[] UnsignedBytesToSigned(byte[] unsignedBytes, string secretPhrase)
         {
             byte[] P = new byte[32];
