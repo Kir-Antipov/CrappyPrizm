@@ -119,7 +119,7 @@ namespace CrappyPrizm
             Coins,
             CoinsFee,
             new Block(BlockId, BlockHeight, Height),
-            DateTime.UnixEpoch.AddSeconds(Timestamp * 10 + 1108803690), // I don't know what the f*ck is it!!!
+            DateTime.UnixEpoch.AddMilliseconds(Timestamp * 1000L + 1532715479500L), // I don't know what the f*ck is it!!!
             DateTime.UtcNow.AddMinutes(Deadline),
             Confirmations,
             Attachment.EncryptedMessage,

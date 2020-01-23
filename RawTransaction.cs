@@ -38,7 +38,7 @@ namespace CrappyPrizm
             Details.Coins,
             Details.CoinsFee,
             new Block(Details.BlockId, Details.BlockHeight, Details.Height),
-            DateTime.UnixEpoch.AddSeconds(Details.Timestamp * 10 + 1108803690), // I don't know what the f*ck is it!!!
+            DateTime.UnixEpoch.AddMilliseconds(Details.Timestamp * 1000L + 1532715479500L), // I don't know what the f*ck is it!!!
             DateTime.UtcNow.AddMinutes(Details.Deadline),
             Details.Confirmations,
             Details.Attachment.EncryptedMessage,
