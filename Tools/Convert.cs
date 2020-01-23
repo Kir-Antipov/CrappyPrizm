@@ -8,6 +8,12 @@ namespace CrappyPrizm.Tools
 {
     public static class Convert
     {
+        #region Var
+        private static readonly int[] GExp = new[] { 1, 2, 4, 8, 16, 5, 10, 20, 13, 26, 17, 7, 14, 28, 29, 31, 27, 19, 3, 6, 12, 24, 21, 15, 30, 25, 23, 11, 22, 9, 18, 1 };
+        private static readonly int[] GLog = new[] { 0, 0, 1, 18, 2, 5, 19, 11, 3, 29, 6, 27, 20, 8, 12, 23, 4, 10, 30, 17, 7, 22, 28, 26, 21, 25, 9, 16, 13, 14, 24, 15 };
+        private static readonly int[] CWMap = new[] { 3, 2, 1, 0, 7, 6, 5, 4, 13, 14, 15, 16, 12, 8, 9, 10, 11 };
+        #endregion
+
         #region Functions
         public static decimal CoinsToAmount(decimal coins) => coins / 100;
         public static decimal AmountToCoins(decimal amount) => amount * 100;
@@ -78,6 +84,81 @@ namespace CrappyPrizm.Tools
             for (int i = 7; i >= 0; --i)
                 accountId = accountId * 256 + hash[i];
             return accountId;
+        }
+
+        public static string AccountIdToAddress(BigInteger accountId)
+        {
+            static int GMul(int a, int b)
+            {
+                if (a == 0 || b == 0) 
+                    return 0;
+
+                return GExp[(GLog[a] + GLog[b]) % 31];
+            }
+
+            const string alphabet = "PRZM23456789ABCDEFGHJKLNQSTUVWXY";
+
+            string acc = accountId.ToString();
+            int[] input = new int[acc.Length];
+            int[] codeword = new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            int[] output = new int[codeword.Length];
+            int pos = 0;
+            int length = acc.Length;
+
+            for (int i = 0; i < length; ++i)
+                input[i] = acc[i] - '0';
+
+            int newLength;
+            do
+            {
+                int divide = 0;
+                newLength = 0;
+
+                for (int i = 0; i < length; ++i)
+                {
+                    divide = divide * 10 + input[i];
+                    if (divide >= 32)
+                    {
+                        input[newLength++] = divide >> 5;
+                        divide &= 31;
+                    }
+                    else if (newLength > 0)
+                    {
+                        input[newLength++] = 0;
+                    }
+                }
+                length = newLength;
+                output[pos++] = divide;
+            }
+            while (newLength != 0);
+
+            for (int i = 0; i < 13; ++i)
+                codeword[i] = --pos >= 0 ? output[i] : 0;
+
+            var p = new int[] { 0, 0, 0, 0 };
+
+            for (int i = 12; i >= 0; --i)
+            {
+                int fb = codeword[i] ^ p[3];
+                p[3] = p[2] ^ GMul(30, fb);
+                p[2] = p[1] ^ GMul(6, fb);
+                p[1] = p[0] ^ GMul(9, fb);
+                p[0] = GMul(17, fb);
+            }
+
+            codeword[13] = p[0];
+            codeword[14] = p[1];
+            codeword[15] = p[2];
+            codeword[16] = p[3];
+
+            StringBuilder address = new StringBuilder(26).Append("PRIZM-");
+            for (int i = 0; i < 17; i++)
+            {
+                address.Append(alphabet[codeword[CWMap[i]]]);
+                if ((i & 3) == 3 && i < 13)
+                    address.Append('-');
+            }
+            return address.ToString();
         }
 
         public static byte[] UnsignedBytesToSigned(byte[] unsignedBytes, string secretPhrase)
