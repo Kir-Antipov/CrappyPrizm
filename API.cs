@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -16,6 +17,38 @@ namespace CrappyPrizm
 
         #region Methods
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
+
+        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(BigInteger accountId, int numberOfConfirmations = 0) => GetBlockchainTransactionsAsync(accountId, numberOfConfirmations).Select(x => x.Prepare());
+
+        private static async IAsyncEnumerable<RawTransactionDetails> GetBlockchainTransactionsAsync(BigInteger accountId, int numberOfConfirmations)
+        {
+            const int bucketSize = 20;
+            int firstIndex = -bucketSize;
+            int lastIndex = -1;
+            if (numberOfConfirmations < 0)
+                numberOfConfirmations = 0;
+
+            do
+            {
+                firstIndex += bucketSize;
+                lastIndex += bucketSize;
+                RawTransactionsContainer? container = await MakeRequestAsync<RawTransactionsContainer?>("getBlockchainTransactions",    ("account", accountId.ToString()),
+                                                                                                                                        ("numberOfConfirmations", numberOfConfirmations.ToString()),
+                                                                                                                                        ("firstIndex", firstIndex.ToString()),
+                                                                                                                                        ("lastIndex", lastIndex.ToString()));
+                if (container is null)
+                    yield break;
+                bool iterated = false;
+                foreach (RawTransactionDetails details in container.Transactions)
+                {
+                    iterated = true;
+                    yield return details;
+                }
+                if (!iterated)
+                    yield break;
+            }
+            while (true);
+        }
 
         public static async Task<Transaction?> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
         {
