@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CrappyPrizm.Crypto
+namespace CrappyPrizm.Tools.Crypto
 {
     internal static partial class Curve25519
     {

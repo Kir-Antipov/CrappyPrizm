@@ -1,11 +1,13 @@
 ﻿using System;
 using Newtonsoft.Json;
-using CrappyPrizm.Crypto;
+using CrappyPrizm.Tools;
+using CrappyPrizm.Tools.Crypto;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
+using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
 {

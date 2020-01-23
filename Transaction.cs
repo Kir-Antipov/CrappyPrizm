@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
 {

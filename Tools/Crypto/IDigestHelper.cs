@@ -1,6 +1,6 @@
 ﻿using Org.BouncyCastle.Crypto;
 
-namespace CrappyPrizm.Crypto
+namespace CrappyPrizm.Tools.Crypto
 {
     public static class IDigestHelper
     {

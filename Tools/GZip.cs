@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 
-namespace CrappyPrizm.Crypto
+namespace CrappyPrizm.Tools
 {
     internal static class GZip
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
-using CrappyPrizm.Crypto;
+using CrappyPrizm.Tools.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
 
-namespace CrappyPrizm
+namespace CrappyPrizm.Tools
 {
     public static class Convert
     {

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
 {
