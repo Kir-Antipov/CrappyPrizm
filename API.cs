@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Numerics;
+using CrappyPrizm.Exceptions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -35,8 +36,8 @@ namespace CrappyPrizm
             return new Account(accountId, address, publicKey: Convert.BytesToHex(publicKey), secretPhrase: secretPhrase);
         }
 
-        public static Task<Account?> GetAccountAsync(BigInteger accountId) => GetAccountAsync(Convert.AccountIdToAddress(accountId));
-        public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
+        public static Task<Account> GetAccountAsync(BigInteger accountId) => GetAccountAsync(Convert.AccountIdToAddress(accountId));
+        public static Task<Account> GetAccountAsync(string address) => MakeRequestAsync<Account>("getAccount", ("account", address));
 
         public static IAsyncEnumerable<Transaction> GetTransactionsAsync(string address, int numberOfConfirmations = 0) => GetTransactionsAsync(Convert.AddressToAccountId(address), numberOfConfirmations);
         public static IAsyncEnumerable<Transaction> GetTransactionsAsync(BigInteger accountId, int numberOfConfirmations = 0) => GetBlockchainTransactionsAsync(accountId, numberOfConfirmations).Select(x => x.Prepare());
@@ -71,28 +72,23 @@ namespace CrappyPrizm
             while (true);
         }
 
-        public static Task<Transaction?> SendAsync(string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, recipient, recipientPublicKey, amount, comment);
-        public static Task<Transaction?> SendAsync(string secretPhrase, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, Convert.AccountIdToAddress(Convert.PublicKeyToAccountId(Convert.HexToBytes(recipientPublicKey))), recipientPublicKey, amount, comment);
-        public static async Task<Transaction?> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null)
+        public static Task<Transaction> SendAsync(string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, recipient, recipientPublicKey, amount, comment);
+        public static Task<Transaction> SendAsync(string secretPhrase, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, Convert.AccountIdToAddress(Convert.PublicKeyToAccountId(Convert.HexToBytes(recipientPublicKey))), recipientPublicKey, amount, comment);
+        public static async Task<Transaction> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null)
         {
-            RawTransaction? raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment ?? "");
-            if (raw is null)
-                return null;
-
-            BroadcastedTransaction? broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), Convert.BytesToHex(Convert.UnsignedBytesToSigned(Convert.HexToBytes(raw.Bytes), secretPhrase)));
-            if (broadcasted is null)
-                return null;
+            RawTransaction raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment ?? "");
+            BroadcastedTransaction broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), Convert.BytesToHex(Convert.UnsignedBytesToSigned(Convert.HexToBytes(raw.Bytes), secretPhrase)));
 
             return raw.Prepare(broadcasted, recipientPublicKey);
         }
 
-        private static Task<RawTransaction?> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
+        private static Task<RawTransaction> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
         {
             EncryptedMessage encryptedMessage = comment.Encrypt(recipientPublicKey, secretPhrase);
             EncryptedMessage encryptedToSelfMessage = comment.Encrypt(publicKey, secretPhrase);
 
 
-            return MakeRequestAsync<RawTransaction?>("sendMoney",   ("deadline", "1440"),
+            return MakeRequestAsync<RawTransaction>("sendMoney",   ("deadline", "1440"),
                                                                     ("amountNQT", Convert.AmountToCoins(amount).ToString("G29")),
                                                                     ("feeNQT", "5"),
                                                                     ("messageToEncryptIsText", "true"),
@@ -111,7 +107,7 @@ namespace CrappyPrizm
                                                                     ("encryptedMessageNonce", encryptedMessage.HexSalt));
         }
 
-        private static Task<BroadcastedTransaction?> BroadcastTransactionAsync(string attachment, string bytes) => MakeRequestAsync<BroadcastedTransaction?>("broadcastTransaction", ("prunableAttachmentJSON", attachment), ("transactionBytes", bytes));
+        private static Task<BroadcastedTransaction> BroadcastTransactionAsync(string attachment, string bytes) => MakeRequestAsync<BroadcastedTransaction>("broadcastTransaction", ("prunableAttachmentJSON", attachment), ("transactionBytes", bytes));
         #endregion
 
         #region Helpers
@@ -119,7 +115,7 @@ namespace CrappyPrizm
         {
             HttpResponseMessage response = await MakeRequestAsync(type, parameters);
             string json = await response.Content.ReadAsStringAsync();
-            return json.Contains("error") ? default : JsonConvert.DeserializeObject<T>(json);
+            return json.Contains("errorCode") ? throw JsonConvert.DeserializeObject<APIException>(json) : JsonConvert.DeserializeObject<T>(json);
         }
 
         private static Task<HttpResponseMessage> MakeRequestAsync(string type, params (string key, string value)[] parameters)
