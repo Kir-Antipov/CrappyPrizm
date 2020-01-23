@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Numerics;
 
 namespace CrappyPrizm
@@ -6,6 +7,12 @@ namespace CrappyPrizm
     internal class RawTransactionDetails
     {
         #region Var
+        [JsonProperty("transaction")]
+        public BigInteger Id { get; }
+
+        [JsonProperty("fullHash")]
+        public string? Hash { get; }
+
         [JsonProperty("amountNQT")]
         public decimal Coins { get; }
 
@@ -53,11 +60,16 @@ namespace CrappyPrizm
 
         [JsonProperty("version")]
         public int Version { get; }
+
+        [JsonProperty("confirmations")]
+        public int Confirmations { get; }
         #endregion
 
         #region Init
         [JsonConstructor]
-        public RawTransactionDetails([JsonProperty("amountNQT")]decimal coins,
+        public RawTransactionDetails([JsonProperty("transaction")]BigInteger id,
+                                     [JsonProperty("fullHash")]string? hash,
+                                     [JsonProperty("amountNQT")]decimal coins,
                                      RawTransactionAttachment attachment,
                                      int deadline,
                                      [JsonProperty("ecBlockHeight")]int blockHeight,
@@ -72,8 +84,11 @@ namespace CrappyPrizm
                                      int subType,
                                      long timestamp,
                                      int type,
-                                     int version)
+                                     int version,
+                                     int confirmations)
         {
+            Id = id;
+            Hash = hash;
             Coins = coins;
             Attachment = attachment;
             Deadline = deadline;
@@ -90,7 +105,26 @@ namespace CrappyPrizm
             Timestamp = timestamp;
             Type = type;
             Version = version;
+            Confirmations = confirmations;
         }
+        #endregion
+
+        #region Functions
+        public Transaction Prepare() => new Transaction
+        (
+            Id,
+            Hash ?? string.Empty,
+            new Account(Sender, SenderAddress, SenderPublicKey),
+            new Account(Recipient, RecipientAddress, string.Empty),
+            Coins,
+            CoinsFee,
+            new Block(BlockId, BlockHeight, Height),
+            DateTime.UnixEpoch.AddSeconds(Timestamp * 10 + 1108803690), // I don't know what the f*ck is it!!!
+            DateTime.UtcNow.AddMinutes(Deadline),
+            Confirmations,
+            Attachment.EncryptedMessage,
+            Attachment.EncryptedToSelfMessage
+        );
         #endregion
     }
 }

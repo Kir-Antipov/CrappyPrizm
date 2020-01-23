@@ -24,10 +24,15 @@ namespace CrappyPrizm
         public DateTime Date { get; }
 
         public DateTime Deadline { get; }
+
+        public int Confirmations { get; }
+
+        public EncryptedMessage? EncryptedMessage { get; }
+        public EncryptedMessage? SelfEncryptedMessage { get; }
         #endregion
 
         #region Init
-        public Transaction(BigInteger id, string hash, Account from, Account to, decimal coins, decimal feeInCoins, Block block, DateTime date, DateTime deadline)
+        public Transaction(BigInteger id, string hash, Account from, Account to, decimal coins, decimal feeInCoins, Block block, DateTime date, DateTime deadline, int confirmations, EncryptedMessage? encryptedMessage = null, EncryptedMessage? selfEncryptedMessage = null)
         {
             Id = id;
             Hash = hash;
@@ -38,6 +43,9 @@ namespace CrappyPrizm
             Block = block;
             Date = date;
             Deadline = deadline;
+            Confirmations = confirmations;
+            EncryptedMessage = encryptedMessage;
+            SelfEncryptedMessage = selfEncryptedMessage;
         }
         #endregion
 
