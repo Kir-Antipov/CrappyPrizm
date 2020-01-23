@@ -24,7 +24,6 @@ namespace CrappyPrizm.Tools
             }
             return hex.ToString();
         }
-
         public static byte[] HexToBytes(string hex)
         {
             static int GetHexVal(char hex)
@@ -58,8 +57,6 @@ namespace CrappyPrizm.Tools
             Curve25519.Clamp(hash);
             return hash;
         }
-
-        public static string SecretPhraseToPrivateKeyHex(string secretPhrase) => BytesToHex(SecretPhraseToPrivateKey(secretPhrase));
 
         public static byte[] UnsignedBytesToSigned(byte[] unsignedBytes, string secretPhrase)
         {
