@@ -47,7 +47,7 @@ namespace CrappyPrizm.Tools
             }
 
             if (hex.Length % 2 == 1)
-                throw new ArgumentException(nameof(hex), "Invalid length");
+                throw new ArgumentException("Invalid length", nameof(hex));
 
             byte[] bytes = new byte[hex.Length >> 1];
             for (int i = 0; i < hex.Length >> 1; ++i)
@@ -62,8 +62,7 @@ namespace CrappyPrizm.Tools
 
         public static byte[] SecretPhraseToPrivateKey(string secretPhrase)
         {
-            Sha256Digest sha = new Sha256Digest();
-            byte[] hash = sha.Digest(StringToBytes(secretPhrase));
+            byte[] hash = new Sha256Digest().Digest(StringToBytes(secretPhrase));
             Curve25519.Clamp(hash);
             return hash;
         }
@@ -71,8 +70,7 @@ namespace CrappyPrizm.Tools
         public static byte[] SecretPhraseToPublicKey(string secretPhrase)
         {
             byte[] bytes = StringToBytes(secretPhrase);
-            Sha256Digest digest = new Sha256Digest();
-            bytes = digest.Digest(bytes);
+            bytes = new Sha256Digest().Digest(bytes);
 
             byte[] publicKey = new byte[32];
             Curve25519.Keygen(publicKey, null, bytes);
@@ -98,6 +96,9 @@ namespace CrappyPrizm.Tools
 
                 return GExp[(GLog[a] + GLog[b]) % 31];
             }
+
+            if (accountId < 0)
+                throw new ArgumentOutOfRangeException(nameof(accountId));
 
             string acc = accountId.ToString();
             int[] input = new int[acc.Length];
@@ -165,6 +166,10 @@ namespace CrappyPrizm.Tools
         public static BigInteger AddressToAccountId(string address)
         {
             char[] chars = address.Skip(6).Where(x => x != '-').ToArray();
+
+            if (chars.Length < 17)
+                throw new FormatException("Unsupported format", new ArgumentException(nameof(address)));
+
             int[] codeword = new int[chars.Length];
             for (int i = 0; i < chars.Length; ++i)
                 codeword[CWMap[i]] = AddressAlphabet.IndexOf(chars[i]);
