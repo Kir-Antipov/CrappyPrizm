@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Numerics;
 using CrappyPrizm.Tools.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
 
@@ -68,6 +69,15 @@ namespace CrappyPrizm.Tools
             Curve25519.Keygen(publicKey, null, bytes);
 
             return publicKey;
+        }
+
+        public static BigInteger PublicKeyToAccountId(byte[] publicKey)
+        {
+            byte[] hash = new Sha256Digest().Digest(publicKey);
+            BigInteger accountId = 0;
+            for (int i = 7; i >= 0; --i)
+                accountId = accountId * 256 + hash[i];
+            return accountId;
         }
 
         public static byte[] UnsignedBytesToSigned(byte[] unsignedBytes, string secretPhrase)
