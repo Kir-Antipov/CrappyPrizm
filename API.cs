@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
@@ -14,9 +15,26 @@ namespace CrappyPrizm
         #region Var
         private const string Url = "https://wallet.prizm.space/";
         private static readonly HttpClient Client = new HttpClient { BaseAddress = new Uri(Url) };
+
+        private static readonly RNGCryptoServiceProvider RandomNumberGenerator = new RNGCryptoServiceProvider();
         #endregion
 
         #region Methods
+        public static Account CreateAccount()
+        {
+            const int symbolsCount = 128;
+            const string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+            byte[] symbols = new byte[symbolsCount];
+            RandomNumberGenerator.GetBytes(symbols);
+
+            string secretPhrase = new string(Array.ConvertAll(symbols, x => alphabet[(int)(x / 255f * (alphabet.Length - 1))]));
+            byte[] publicKey = Convert.SecretPhraseToPublicKey(secretPhrase);
+            BigInteger accountId = Convert.PublicKeyToAccountId(publicKey);
+            string address = Convert.AccountIdToAddress(accountId);
+            return new Account(accountId, address, publicKey: Convert.BytesToHex(publicKey), secretPhrase: secretPhrase);
+        }
+
         public static Task<Account?> GetAccountAsync(BigInteger accountId) => GetAccountAsync(Convert.AccountIdToAddress(accountId));
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
 
