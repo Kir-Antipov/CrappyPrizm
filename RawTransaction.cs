@@ -33,8 +33,8 @@ namespace CrappyPrizm
         (
             broadcasted.Id,
             broadcasted.Hash,
-            new Account(Details.Sender, Details.SenderAddress, Details.SenderPublicKey),
-            new Account(Details.Recipient, Details.RecipientAddress, recipientPublicKey),
+            new Account(Details.Sender, Details.SenderAddress, publicKey: Details.SenderPublicKey),
+            new Account(Details.Recipient, Details.RecipientAddress, publicKey: recipientPublicKey),
             Details.Coins,
             Details.CoinsFee,
             new Block(Details.BlockId, Details.BlockHeight, Details.Height),

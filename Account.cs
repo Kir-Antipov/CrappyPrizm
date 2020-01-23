@@ -21,22 +21,25 @@ namespace CrappyPrizm
 
         [JsonProperty("publicKey")]
         public string PublicKey { get; }
+
+        [JsonProperty("secretPhrase")]
+        public string SecretPhrase { get; }
         #endregion
 
         #region Init
         [JsonConstructor]
         public Account( [JsonProperty("account")]BigInteger id,
-                        [JsonProperty("accountRS")]string address,
-                        [JsonProperty("balanceNQT")]decimal coins,
-                        [JsonProperty("publicKey")]string publicKey)
+                        [JsonProperty("accountRS")]string? address = null,
+                        [JsonProperty("balanceNQT")]decimal coins = -1,
+                        string? publicKey = null,
+                        string? secretPhrase = null)
         {
             Id = id;
-            Address = address;
-            Coins = coins;
-            PublicKey = publicKey;
+            Address = address ?? string.Empty;
+            Coins = coins < 0 ? -1 : coins;
+            PublicKey = publicKey ?? string.Empty;
+            SecretPhrase = secretPhrase ?? string.Empty;
         }
-
-        public Account(BigInteger id, string address, string publicKey) : this(id, address, -1, publicKey) { }
         #endregion
 
         #region Functions

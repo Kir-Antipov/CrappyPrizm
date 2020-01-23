@@ -114,8 +114,8 @@ namespace CrappyPrizm
         (
             Id,
             Hash ?? string.Empty,
-            new Account(Sender, SenderAddress, SenderPublicKey),
-            new Account(Recipient, RecipientAddress, string.Empty),
+            new Account(Sender, SenderAddress, publicKey: SenderPublicKey),
+            new Account(Recipient, RecipientAddress),
             Coins,
             CoinsFee,
             new Block(BlockId, BlockHeight, Height),
