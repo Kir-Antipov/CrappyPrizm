@@ -17,8 +17,10 @@ namespace CrappyPrizm
         #endregion
 
         #region Methods
+        public static Task<Account?> GetAccountAsync(BigInteger accountId) => GetAccountAsync(Convert.AccountIdToAddress(accountId));
         public static Task<Account?> GetAccountAsync(string address) => MakeRequestAsync<Account?>("getAccount", ("account", address));
 
+        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(string address, int numberOfConfirmations = 0) => GetTransactionsAsync(Convert.AddressToAccountId(address), numberOfConfirmations);
         public static IAsyncEnumerable<Transaction> GetTransactionsAsync(BigInteger accountId, int numberOfConfirmations = 0) => GetBlockchainTransactionsAsync(accountId, numberOfConfirmations).Select(x => x.Prepare());
 
         private static async IAsyncEnumerable<RawTransactionDetails> GetBlockchainTransactionsAsync(BigInteger accountId, int numberOfConfirmations)
@@ -51,9 +53,11 @@ namespace CrappyPrizm
             while (true);
         }
 
-        public static async Task<Transaction?> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
+        public static Task<Transaction?> SendAsync(string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, recipient, recipientPublicKey, amount, comment);
+        public static Task<Transaction?> SendAsync(string secretPhrase, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, Convert.AccountIdToAddress(Convert.PublicKeyToAccountId(Convert.HexToBytes(recipientPublicKey))), recipientPublicKey, amount, comment);
+        public static async Task<Transaction?> SendAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null)
         {
-            RawTransaction? raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
+            RawTransaction? raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment ?? "");
             if (raw is null)
                 return null;
 
