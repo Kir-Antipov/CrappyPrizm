@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using System.Numerics;
+using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
 {
@@ -119,7 +120,7 @@ namespace CrappyPrizm
             Coins,
             CoinsFee,
             new Block(BlockId, BlockHeight, Height),
-            DateTime.UnixEpoch.AddMilliseconds(Timestamp * 1000L + 1532715479500L), // I don't know what the f*ck is it!!!
+            Convert.TheirCrappyTimestampToDateTime(Timestamp),
             DateTime.UtcNow.AddMinutes(Deadline),
             Confirmations,
             Attachment.EncryptedMessage,
