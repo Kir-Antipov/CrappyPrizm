@@ -39,27 +39,26 @@ namespace CrappyPrizm
         public static Task<Account> GetAccountAsync(BigInteger accountId) => GetAccountAsync(Convert.AccountIdToAddress(accountId));
         public static Task<Account> GetAccountAsync(string address) => MakeRequestAsync<Account>("getAccount", ("account", address));
 
-        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(string address, int numberOfConfirmations = 0) => GetTransactionsAsync(Convert.AddressToAccountId(address), numberOfConfirmations);
-        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(BigInteger accountId, int numberOfConfirmations = 0) => GetBlockchainTransactionsAsync(accountId, numberOfConfirmations).Select(x => x.Prepare());
+        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(string address, int? minNumberOfConfirmations = null, DateTime? minDateUtc = null) => GetTransactionsAsync(Convert.AddressToAccountId(address), minNumberOfConfirmations, minDateUtc);
+        public static IAsyncEnumerable<Transaction> GetTransactionsAsync(BigInteger accountId, int? minNumberOfConfirmations = null, DateTime? minDateUtc = null) => GetBlockchainTransactionsAsync(accountId, minNumberOfConfirmations ?? 0, Convert.DateTimeToTheirCrappyTimestamp(minDateUtc ?? DateTime.UnixEpoch)).Select(x => x.Prepare());
 
-        private static async IAsyncEnumerable<RawTransactionDetails> GetBlockchainTransactionsAsync(BigInteger accountId, int numberOfConfirmations)
+        private static async IAsyncEnumerable<RawTransactionDetails> GetBlockchainTransactionsAsync(BigInteger accountId, int numberOfConfirmations, long timestamp)
         {
             const int bucketSize = 20;
             int firstIndex = -bucketSize;
             int lastIndex = -1;
-            if (numberOfConfirmations < 0)
-                numberOfConfirmations = 0;
+            numberOfConfirmations = Math.Max(numberOfConfirmations, 0);
+            timestamp = Math.Max(timestamp, 0);
 
             do
             {
                 firstIndex += bucketSize;
                 lastIndex += bucketSize;
-                RawTransactionsContainer? container = await MakeRequestAsync<RawTransactionsContainer?>("getBlockchainTransactions",    ("account", accountId.ToString()),
+                RawTransactionsContainer container = await MakeRequestAsync<RawTransactionsContainer>("getBlockchainTransactions",      ("account", accountId.ToString()),
                                                                                                                                         ("numberOfConfirmations", numberOfConfirmations.ToString()),
+                                                                                                                                       ("timestamp", timestamp.ToString()),
                                                                                                                                         ("firstIndex", firstIndex.ToString()),
                                                                                                                                         ("lastIndex", lastIndex.ToString()));
-                if (container is null)
-                    yield break;
                 bool iterated = false;
                 foreach (RawTransactionDetails details in container.Transactions)
                 {
@@ -88,7 +87,7 @@ namespace CrappyPrizm
             EncryptedMessage encryptedToSelfMessage = comment.Encrypt(publicKey, secretPhrase);
 
 
-            return MakeRequestAsync<RawTransaction>("sendMoney",   ("deadline", "1440"),
+            return MakeRequestAsync<RawTransaction>("sendMoney",    ("deadline", "1440"),
                                                                     ("amountNQT", Convert.AmountToCoins(amount).ToString("G29")),
                                                                     ("feeNQT", "5"),
                                                                     ("messageToEncryptIsText", "true"),
