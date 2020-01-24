@@ -30,6 +30,10 @@ namespace CrappyPrizm
             RandomNumberGenerator.GetBytes(symbols);
 
             string secretPhrase = new string(Array.ConvertAll(symbols, x => alphabet[(int)(x / 255f * (alphabet.Length - 1))]));
+            return CreateAccount(secretPhrase);
+        }
+        public static Account CreateAccount(string secretPhrase)
+        {
             byte[] publicKey = Convert.SecretPhraseToPublicKey(secretPhrase);
             BigInteger accountId = Convert.PublicKeyToAccountId(publicKey);
             string address = Convert.AccountIdToAddress(accountId);
@@ -56,7 +60,7 @@ namespace CrappyPrizm
                 lastIndex += bucketSize;
                 RawTransactionsContainer container = await MakeRequestAsync<RawTransactionsContainer>("getBlockchainTransactions",      ("account", accountId.ToString()),
                                                                                                                                         ("numberOfConfirmations", numberOfConfirmations.ToString()),
-                                                                                                                                       ("timestamp", timestamp.ToString()),
+                                                                                                                                        ("timestamp", timestamp.ToString()),
                                                                                                                                         ("firstIndex", firstIndex.ToString()),
                                                                                                                                         ("lastIndex", lastIndex.ToString()));
                 bool iterated = false;
