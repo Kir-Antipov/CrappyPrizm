@@ -8,7 +8,6 @@
 
         InvalidData = 4,
 
-        NotForging = 5,
         UnknownAccount = 5,
 
         NotEnoughFunds = 6,
