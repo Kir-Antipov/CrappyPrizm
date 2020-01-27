@@ -21,17 +21,19 @@ namespace CrappyPrizm
         #endregion
 
         #region Methods
-        public static Account CreateAccount()
+        public static Account CreateAccount() => CreateAccount(256);
+
+        public static Account CreateAccount(int secretLength)
         {
-            const int symbolsCount = 128;
             const string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-            byte[] symbols = new byte[symbolsCount];
+            byte[] symbols = new byte[secretLength];
             RandomNumberGenerator.GetBytes(symbols);
 
             string secretPhrase = new string(Array.ConvertAll(symbols, x => alphabet[(int)(x / 255f * (alphabet.Length - 1))]));
             return CreateAccount(secretPhrase);
         }
+
         public static Account CreateAccount(string secretPhrase)
         {
             byte[] publicKey = Convert.SecretPhraseToPublicKey(secretPhrase);
