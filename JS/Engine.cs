@@ -43,7 +43,7 @@ namespace CrappyPrizm.JS
             {
                 if (script is { Initialized: false })
                 {
-                    JSEngine.Execute(File.ReadAllText(Scripts[name].Path));
+                    JSEngine.Execute(script.GetScript() ?? string.Empty);
                     Scripts[name] = script.GetInitialized();
                 }
                 return true;
