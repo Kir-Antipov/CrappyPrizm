@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using JSEngine = Jint.Engine;
 using System.Collections.Generic;
 
