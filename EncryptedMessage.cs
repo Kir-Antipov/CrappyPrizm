@@ -1,12 +1,5 @@
-﻿using System;
+﻿using CrappyPrizm.JS;
 using Newtonsoft.Json;
-using CrappyPrizm.Tools;
-using CrappyPrizm.Tools.Crypto;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Crypto.Parameters;
 using Convert = CrappyPrizm.Tools.Convert;
 
 namespace CrappyPrizm
@@ -55,38 +48,16 @@ namespace CrappyPrizm
         #region Functions
         public Message Decrypt(string publicKey, string secretPhrase)
         {
+            using Engine engine = EnginePool.Get();
             byte[] sharedKey = Convert.PrivateAndPublicToSharedKey(Convert.SecretPhraseToPrivateKey(secretPhrase), Convert.HexToBytes(publicKey));
             for (int i = 0; i < Salt.Length; ++i)
                 sharedKey[i] ^= Salt[i];
-            Sha256Digest sha256 = new Sha256Digest();
-            sharedKey = sha256.Digest(sharedKey);
 
-            byte[] decrypted = AesDecrypt(Data, sharedKey);
+            byte[] decrypted = engine.AesDecrypt(Data, sharedKey);
             if (IsCompressed)
-                decrypted = GZip.Decompress(decrypted);
+                decrypted = engine.Inflate(decrypted);
 
             return new Message(IsText ? Convert.BytesToString(decrypted) : Convert.BytesToHex(decrypted));
-        }
-
-        public static byte[] AesDecrypt(byte[] ciphered, byte[] key)
-        {
-            if (ciphered.Length == 0 || ciphered.Length % 16 != 0)
-                throw new ArgumentException(nameof(ciphered));
-
-            byte[] iv = new byte[16];
-            Array.Copy(ciphered, iv, iv.Length);
-
-            byte[] data = new byte[ciphered.Length - 16];
-            Array.Copy(ciphered, iv.Length, data, 0, data.Length);
-
-            PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CbcBlockCipher(new AesEngine()));
-            aes.Init(false, new ParametersWithIV(new KeyParameter(key), iv));
-            byte[] output = new byte[aes.GetOutputSize(data.Length)];
-            int plaintextLength = aes.ProcessBytes(data, 0, data.Length, output, 0);
-            plaintextLength += aes.DoFinal(output, plaintextLength);
-            byte[] result = new byte[plaintextLength];
-            Array.Copy(output, 0, result, 0, result.Length);
-            return result;
         }
         #endregion
     }
