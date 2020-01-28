@@ -23,7 +23,7 @@ namespace CrappyPrizm
         public Message(string text) => Text = text;
         
         public static implicit operator string(Message message) => message.Text;
-        public static implicit operator Message(string text) => new Message(text);
+        public static implicit operator Message(string? text) => new Message(text ?? string.Empty);
         #endregion
 
         #region Functions
