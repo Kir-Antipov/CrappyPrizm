@@ -1,6 +1,6 @@
 ﻿namespace CrappyPrizm.JS
 {
-    public class Script
+    internal class Script
     {
         #region Var
         public string Name { get; }
