@@ -110,7 +110,21 @@ namespace CrappyPrizm
             decimal amount = account.Balance - GetComission(account.Balance);
             if (amount <= 0)
                 throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
-            return await SendAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
+
+            comment ??= string.Empty;
+            RawTransaction raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
+            if (Convert.CoinsToAmount(raw.Details.CoinsFee) != GetComission(account.Balance))
+            {
+                amount = account.Balance - Convert.CoinsToAmount(raw.Details.CoinsFee);
+                if (amount <= 0)
+                    throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
+
+                raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
+            }
+
+            BroadcastedTransaction broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), Convert.BytesToHex(Convert.UnsignedBytesToSigned(Convert.HexToBytes(raw.Bytes), secretPhrase)));
+
+            return raw.Prepare(broadcasted, recipientPublicKey);
         }
 
         private static Task<RawTransaction> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
