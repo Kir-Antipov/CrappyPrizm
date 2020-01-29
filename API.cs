@@ -90,7 +90,13 @@ namespace CrappyPrizm
             while (true);
         }
 
-        public static decimal GetComission(decimal amount) => amount * 0 + 0.05m; // amount * 0 = 0, I know it, thanks.
+        public static decimal GetComission(decimal amount)
+        {
+            if (amount < 12)
+                return 0.05m;
+
+            return Math.Round((6 + (amount - 12) / 2) / 100, 2, MidpointRounding.AwayFromZero);
+        }
 
         public static Task<Transaction> SendAsync(string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, recipient, recipientPublicKey, amount, comment);
         public static Task<Transaction> SendAsync(string secretPhrase, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, Convert.AccountIdToAddress(Convert.PublicKeyToAccountId(Convert.HexToBytes(recipientPublicKey))), recipientPublicKey, amount, comment);
@@ -111,20 +117,7 @@ namespace CrappyPrizm
             if (amount <= 0)
                 throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
 
-            comment ??= string.Empty;
-            RawTransaction raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
-            if (Convert.CoinsToAmount(raw.Details.CoinsFee) != GetComission(account.Balance))
-            {
-                amount = account.Balance - Convert.CoinsToAmount(raw.Details.CoinsFee);
-                if (amount <= 0)
-                    throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
-
-                raw = await SendMoneyAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
-            }
-
-            BroadcastedTransaction broadcasted = await BroadcastTransactionAsync(JsonConvert.SerializeObject(raw.Details.Attachment), Convert.BytesToHex(Convert.UnsignedBytesToSigned(Convert.HexToBytes(raw.Bytes), secretPhrase)));
-
-            return raw.Prepare(broadcasted, recipientPublicKey);
+            return await SendAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
         }
 
         private static Task<RawTransaction> SendMoneyAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message comment)
