@@ -17,7 +17,7 @@ namespace CrappyPrizm
         public decimal Balance => Coins == -1 ? -1 : Convert.CoinsToAmount(Coins);
 
         [JsonProperty("balanceNQT")]
-        public decimal Coins { get; }
+        public long Coins { get; }
 
         [JsonProperty("publicKey")]
         public string PublicKey { get; }
@@ -30,7 +30,7 @@ namespace CrappyPrizm
         [JsonConstructor]
         public Account( [JsonProperty("account")]BigInteger id,
                         [JsonProperty("accountRS")]string? address = null,
-                        [JsonProperty("balanceNQT")]decimal coins = -1,
+                        [JsonProperty("balanceNQT")]long coins = -1,
                         string? publicKey = null,
                         string? secretPhrase = null)
         {

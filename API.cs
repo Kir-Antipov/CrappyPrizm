@@ -127,7 +127,7 @@ namespace CrappyPrizm
 
 
             return MakeRequestAsync<RawTransaction>("sendMoney",    ("deadline", "1440"),
-                                                                    ("amountNQT", Convert.AmountToCoins(amount).ToString("G29")),
+                                                                    ("amountNQT", Convert.AmountToCoins(amount).ToString()),
                                                                     ("feeNQT", "5"),
                                                                     ("messageToEncryptIsText", "true"),
                                                                     ("messageToEncryptToSelfIsText", "true"),

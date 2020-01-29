@@ -15,7 +15,7 @@ namespace CrappyPrizm
         public string? Hash { get; }
 
         [JsonProperty("amountNQT")]
-        public decimal Coins { get; }
+        public long Coins { get; }
 
         [JsonProperty("attachment")]
         public RawTransactionAttachment Attachment { get; }
@@ -30,7 +30,7 @@ namespace CrappyPrizm
         public BigInteger BlockId { get; }
 
         [JsonProperty("feeNQT")]
-        public decimal CoinsFee { get; }
+        public long CoinsFee { get; }
 
         [JsonProperty("height")]
         public int Height { get; }
@@ -70,12 +70,12 @@ namespace CrappyPrizm
         [JsonConstructor]
         public RawTransactionDetails([JsonProperty("transaction")]BigInteger id,
                                      [JsonProperty("fullHash")]string? hash,
-                                     [JsonProperty("amountNQT")]decimal coins,
+                                     [JsonProperty("amountNQT")]long coins,
                                      RawTransactionAttachment attachment,
                                      int deadline,
                                      [JsonProperty("ecBlockHeight")]int blockHeight,
                                      [JsonProperty("ecBlockId")]BigInteger blockId,
-                                     [JsonProperty("feeNQT")]decimal coinsFee,
+                                     [JsonProperty("feeNQT")]long coinsFee,
                                      int height,
                                      BigInteger recipient,
                                      [JsonProperty("recipientRS")]string recipientAddress,

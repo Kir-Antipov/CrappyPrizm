@@ -20,8 +20,8 @@ namespace CrappyPrizm.Tools
         #endregion
 
         #region Functions
-        public static decimal CoinsToAmount(decimal coins) => coins / 100;
-        public static decimal AmountToCoins(decimal amount) => amount * 100;
+        public static decimal CoinsToAmount(long coins) => coins / 100m;
+        public static long AmountToCoins(decimal amount) => (long)Math.Round(amount * 100, MidpointRounding.ToZero);
 
         public static string BytesToHex(byte[] bytes)
         {

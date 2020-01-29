@@ -11,8 +11,8 @@ namespace CrappyPrizm
 
         public string Hash { get; }
 
-        public decimal Coins { get; }
-        public decimal FeeInCoins { get; }
+        public long Coins { get; }
+        public long FeeInCoins { get; }
 
         public decimal Amount => Convert.CoinsToAmount(Coins);
         public decimal Fee => Convert.CoinsToAmount(FeeInCoins);
@@ -33,7 +33,7 @@ namespace CrappyPrizm
         #endregion
 
         #region Init
-        public Transaction(BigInteger id, string hash, Account from, Account to, decimal coins, decimal feeInCoins, Block block, DateTime date, DateTime deadline, int confirmations, EncryptedMessage? encryptedMessage = null, EncryptedMessage? selfEncryptedMessage = null)
+        public Transaction(BigInteger id, string hash, Account from, Account to, long coins, long feeInCoins, Block block, DateTime date, DateTime deadline, int confirmations, EncryptedMessage? encryptedMessage = null, EncryptedMessage? selfEncryptedMessage = null)
         {
             Id = id;
             Hash = hash;
