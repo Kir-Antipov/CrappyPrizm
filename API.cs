@@ -117,6 +117,10 @@ namespace CrappyPrizm
             if (amount <= 0)
                 throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
 
+            amount += 0.01m;
+            if (amount + ComputeComission(amount) > account.Balance)
+                amount -= 0.01m;
+
             return await SendAsync(publicKey, secretPhrase, recipient, recipientPublicKey, amount, comment);
         }
 
