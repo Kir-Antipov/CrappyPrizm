@@ -129,7 +129,6 @@ namespace CrappyPrizm
             EncryptedMessage encryptedMessage = comment.Encrypt(recipientPublicKey, secretPhrase);
             EncryptedMessage encryptedToSelfMessage = comment.Encrypt(publicKey, secretPhrase);
 
-
             return MakeRequestAsync<RawTransaction>("sendMoney",    ("deadline", "1440"),
                                                                     ("amountNQT", Convert.AmountToCoins(amount).ToString()),
                                                                     ("feeNQT", "5"),
