@@ -90,7 +90,7 @@ namespace CrappyPrizm
             while (true);
         }
 
-        public static decimal GetComission(decimal amount)
+        public static decimal ComputeComission(decimal amount)
         {
             if (amount < 12)
                 return 0.05m;
@@ -113,7 +113,7 @@ namespace CrappyPrizm
         public static async Task<Transaction> SendAllAsync(string publicKey, string secretPhrase, string recipient, string recipientPublicKey, Message? comment = null)
         {
             Account account = await GetAccountAsync(Convert.PublicKeyToAccountId(Convert.HexToBytes(publicKey)));
-            decimal amount = account.Balance - GetComission(account.Balance);
+            decimal amount = account.Balance - ComputeComission(account.Balance);
             if (amount <= 0)
                 throw new NotEnoughFundsException("Wallet balance less than or equal to transfer fee", ErrorCode.NotEnoughFunds);
 
