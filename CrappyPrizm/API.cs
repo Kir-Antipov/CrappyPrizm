@@ -95,7 +95,7 @@ namespace CrappyPrizm
             if (amount < 12)
                 return 0.05m;
 
-            return Math.Min(Math.Round((6 + (amount - 12) / 2) / 100, 2, MidpointRounding.ToZero), 10);
+            return Math.Min(Math.Round((6 + (amount - 12) / 2) / 100 - 0.005m, 2, MidpointRounding.AwayFromZero), 10);
         }
 
         public static Task<Transaction> SendAsync(string secretPhrase, string recipient, string recipientPublicKey, decimal amount, Message? comment = null) => SendAsync(Convert.BytesToHex(Convert.SecretPhraseToPublicKey(secretPhrase)), secretPhrase, recipient, recipientPublicKey, amount, comment);

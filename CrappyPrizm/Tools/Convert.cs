@@ -21,7 +21,7 @@ namespace CrappyPrizm.Tools
 
         #region Functions
         public static decimal CoinsToAmount(long coins) => coins / 100m;
-        public static long AmountToCoins(decimal amount) => (long)Math.Round(amount * 100, MidpointRounding.ToZero);
+        public static long AmountToCoins(decimal amount) => (long)Math.Floor(amount * 100);
 
         public static string BytesToHex(byte[] bytes)
         {
