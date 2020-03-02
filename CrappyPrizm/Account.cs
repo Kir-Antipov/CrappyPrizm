@@ -43,6 +43,9 @@ namespace CrappyPrizm
         #endregion
 
         #region Functions
+        public static bool operator ==(Account a, Account b) => a?.Id == b?.Id; 
+        public static bool operator !=(Account a, Account b) => a?.Id != b?.Id; 
+
         public override int GetHashCode() => Id.GetHashCode();
         public override string ToString() => Address;
         public override bool Equals(object? obj) => obj is Account account && account.Id == Id;
