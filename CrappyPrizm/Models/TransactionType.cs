@@ -1,4 +1,4 @@
-﻿namespace CrappyPrizm
+﻿namespace CrappyPrizm.Models
 {
     public enum TransactionType
     {

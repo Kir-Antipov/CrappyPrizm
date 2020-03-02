@@ -2,7 +2,7 @@
 using System.Numerics;
 using Convert = CrappyPrizm.Tools.Convert;
 
-namespace CrappyPrizm
+namespace CrappyPrizm.Models
 {
     public class Account
     {

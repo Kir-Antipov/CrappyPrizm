@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CrappyPrizm
+namespace CrappyPrizm.Models
 {
     internal class RawTransactionAttachment
     {

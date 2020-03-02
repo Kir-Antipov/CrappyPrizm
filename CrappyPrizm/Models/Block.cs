@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace CrappyPrizm
+namespace CrappyPrizm.Models
 {
     public class Block
     {

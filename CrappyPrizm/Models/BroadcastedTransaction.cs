@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Numerics;
 
-namespace CrappyPrizm
+namespace CrappyPrizm.Models
 {
     internal class BroadcastedTransaction
     {
