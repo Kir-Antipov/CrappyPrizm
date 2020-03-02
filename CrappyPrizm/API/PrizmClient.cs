@@ -25,7 +25,12 @@ namespace CrappyPrizm.API
         public PrizmClient(HttpClient httpClient, bool disposeClient) : base(httpClient, disposeClient) 
         {
             Accounts = new AccountEndpoint(this);
+            SetEndpoint(typeof(AccountEndpoint).TypeHandle.Value, Accounts);
+            SetEndpoint(typeof(IAccountEndpoint).TypeHandle.Value, Accounts);
+
             Transactions = new TransactionEndpoint(this);
+            SetEndpoint(typeof(TransactionEndpoint).TypeHandle.Value, Transactions);
+            SetEndpoint(typeof(ITransactionEndpoint).TypeHandle.Value, Transactions);
         }
         #endregion
     }
