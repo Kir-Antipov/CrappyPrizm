@@ -45,6 +45,14 @@ namespace CrappyPrizm.Models
             PublicKey = publicKey ?? string.Empty;
             SecretPhrase = secretPhrase ?? string.Empty;
         }
+
+        public static Account FromSecretPhrase(string secretPhrase)
+        {
+            byte[] publicKey = Convert.SecretPhraseToPublicKey(secretPhrase);
+            BigInteger accountId = Convert.PublicKeyToAccountId(publicKey);
+            string address = Convert.AccountIdToAddress(accountId);
+            return new Account(accountId, address, publicKey: Convert.BytesToHex(publicKey), secretPhrase: secretPhrase);
+        }
         #endregion
 
         #region Functions
