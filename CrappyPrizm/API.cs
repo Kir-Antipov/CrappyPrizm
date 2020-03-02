@@ -65,27 +65,17 @@ namespace CrappyPrizm
                                                                                                                                         ("timestamp", timestamp.ToString()),
                                                                                                                                         ("firstIndex", firstIndex.ToString()),
                                                                                                                                         ("lastIndex", lastIndex.ToString()));
-                bool iterated = false;
-                foreach (RawTransactionDetails details in container.Transactions)
-                {
-                    iterated = true;
-                    switch (type)
-                    {
-                        case TransactionType.Incoming:
-                            if (details.Recipient == accountId)
-                                yield return details;
-                            break;
-                        case TransactionType.Outgoing:
-                            if (details.Sender == accountId)
-                                yield return details;
-                            break;
-                        default:
-                            yield return details;
-                            break;
-                    }
-                }
-                if (!iterated)
+                if (container.Transactions.Length == 0)
                     yield break;
+
+                IEnumerable<RawTransactionDetails> transactions = type switch
+                {
+                    TransactionType.Incoming => container.Transactions.Where(x => x.Recipient == accountId),
+                    TransactionType.Outgoing => container.Transactions.Where(x => x.Sender == accountId),
+                    _ => container.Transactions
+                };
+                foreach (RawTransactionDetails details in transactions)
+                    yield return details;
             }
             while (true);
         }
