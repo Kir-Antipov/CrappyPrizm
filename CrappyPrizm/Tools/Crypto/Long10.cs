@@ -375,20 +375,6 @@ namespace CrappyPrizm.Tools.Crypto
             }
         }
 
-        private static void Sqrt(Long10 x, Long10 u)
-        {
-            Long10 v = new Long10();
-            Long10 t1 = new Long10();
-            Long10 t2 = new Long10();
-            Add(t1, u, u);
-            Recip(v, t1, 1);
-            Sqr(x, v);
-            Mul(t2, t1, x);
-            t2[0]--;
-            Mul(t1, v, t2);
-            Mul(x, u, t1);
-        }
-
         private static void MontPrep(Long10 t1, Long10 t2, Long10 ax, Long10 az)
         {
             Add(t1, ax, az);
