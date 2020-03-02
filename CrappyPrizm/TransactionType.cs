@@ -4,6 +4,7 @@
     {
         All,
         Incoming,
-        Outgoing
+        Outgoing,
+        Paramining
     }
 }

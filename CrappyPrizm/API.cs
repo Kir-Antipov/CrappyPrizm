@@ -72,6 +72,7 @@ namespace CrappyPrizm
                 {
                     TransactionType.Incoming => container.Transactions.Where(x => x.Recipient == accountId),
                     TransactionType.Outgoing => container.Transactions.Where(x => x.Sender == accountId),
+                    TransactionType.Paramining => container.Transactions.Where(x => x.Sender == Account.Genesis.Id),
                     _ => container.Transactions
                 };
                 foreach (RawTransactionDetails details in transactions)

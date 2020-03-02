@@ -24,6 +24,11 @@ namespace CrappyPrizm
 
         [JsonProperty("secretPhrase")]
         public string SecretPhrase { get; }
+
+        [JsonIgnore]
+        public bool IsGenesis => Id == Genesis.Id;
+
+        public static readonly Account Genesis = new Account(8562459348922351959, "PRIZM-TE8N-B3VM-JJQH-5NYJB", publicKey: "491a0d3714a326a3acb3ffe90a61220a17d0b92c747b8036e2e115eeff21dd72");
         #endregion
 
         #region Init

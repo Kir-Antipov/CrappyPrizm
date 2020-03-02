@@ -28,6 +28,8 @@ namespace CrappyPrizm
 
         public int Confirmations { get; }
 
+        public bool IsParamining => From.IsGenesis;
+
         public EncryptedMessage? EncryptedMessage { get; }
         public EncryptedMessage? SelfEncryptedMessage { get; }
         #endregion
