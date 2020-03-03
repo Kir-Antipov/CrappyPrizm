@@ -1,4 +1,5 @@
 ﻿using System;
+using Jint.Native;
 using JSEngine = Jint.Engine;
 using System.Collections.Generic;
 
@@ -18,6 +19,8 @@ namespace CrappyPrizm.JS
         {
             { Pako, Pako },
             { CryptoJS, CryptoJS },
+            { nameof(AesEncrypt), nameof(AesEncrypt) },
+            { nameof(AesDecrypt), nameof(AesDecrypt) },
             { WordArrayToByteArray, WordArrayToByteArray },
             { ByteArrayToWordArray, ByteArrayToWordArray }
         };
@@ -30,6 +33,8 @@ namespace CrappyPrizm.JS
         {
             Initialize(Pako);
             Initialize(CryptoJS);
+            Initialize(nameof(AesEncrypt));
+            Initialize(nameof(AesDecrypt));
             Initialize(ByteArrayToWordArray);
             Initialize(WordArrayToByteArray);
         }
@@ -50,47 +55,13 @@ namespace CrappyPrizm.JS
             return false;
         }
 
-        public byte[] AesEncrypt(byte[] data, byte[] key, byte[] iv)
-        {
-            JSEngine.SetValue("data", data);
-            JSEngine.SetValue("key", key);
-            JSEngine.SetValue("iv", iv);
+        public byte[] AesEncrypt(byte[] data, byte[] key, byte[] iv) => JSEngine.GetValue("aesEncrypt").Invoke(JsValue.FromObject(JSEngine, data), JsValue.FromObject(JSEngine, key), JsValue.FromObject(JSEngine, iv)).AsArray().ToByteArray();
 
-            JSEngine.Execute("data = byteArrayToWordArray(data);");
-            JSEngine.Execute("key = CryptoJS.SHA256(byteArrayToWordArray(key));");
-            JSEngine.Execute("iv = byteArrayToWordArray(iv);");
+        public byte[] AesDecrypt(byte[] data, byte[] key) => JSEngine.GetValue("aesDecrypt").Invoke(JsValue.FromObject(JSEngine, data), JsValue.FromObject(JSEngine, key)).AsArray().ToByteArray();
 
-            JSEngine.Execute("var encrypted = CryptoJS.AES.encrypt(data, key, { iv: iv });");
-            JSEngine.Execute("var result = wordArrayToByteArray(encrypted.iv).concat(wordArrayToByteArray(encrypted.ciphertext))");
+        public byte[] Deflate(byte[] bytes) => JSEngine.GetValueByPath("pako", "gzip").Invoke(JsValue.FromObject(JSEngine, bytes)).AsArray().ToByteArray();
 
-            return JSEngine.GetValue("result").AsArray().ToByteArray();
-        }
-
-        public byte[] AesDecrypt(byte[] data, byte[] key)
-        {
-            JSEngine.SetValue("data", data);
-            JSEngine.SetValue("key", key);
-
-            JSEngine.Execute("var iv = byteArrayToWordArray(data.slice(0, 16));");
-            JSEngine.Execute("data = byteArrayToWordArray(data.slice(16));");
-            JSEngine.Execute("key = CryptoJS.SHA256(byteArrayToWordArray(key));");
-            JSEngine.Execute("var encrypted = CryptoJS.lib.CipherParams.create({ ciphertext: data, iv: iv, key: key });");
-            JSEngine.Execute("var decrypted = wordArrayToByteArray(CryptoJS.AES.decrypt(encrypted, key, { iv: iv }));");
-
-            return JSEngine.GetValue("decrypted").AsArray().ToByteArray();
-        }
-
-        public byte[] Deflate(byte[] bytes)
-        {
-            JSEngine.SetValue("bytes", bytes);
-            return JSEngine.GetValueByPath("pako", "gzip").Invoke(JSEngine.GetValue("bytes")).AsArray().ToByteArray();
-        }
-
-        public byte[] Inflate(byte[] bytes)
-        {
-            JSEngine.SetValue("bytes", bytes);
-            return JSEngine.GetValueByPath("pako", "inflate").Invoke(JSEngine.GetValue("bytes")).AsArray().ToByteArray();
-        }
+        public byte[] Inflate(byte[] bytes) => JSEngine.GetValueByPath("pako", "inflate").Invoke(JsValue.FromObject(JSEngine, bytes)).AsArray().ToByteArray();
 
         public void Dispose() => EnginePool.Release(this);
         #endregion

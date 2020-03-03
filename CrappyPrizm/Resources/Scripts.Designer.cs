@@ -61,6 +61,24 @@ namespace CrappyPrizm.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to function aesDecrypt(a,b){var c=byteArrayToWordArray(a.slice(0,16));a=byteArrayToWordArray(a.slice(16)),b=CryptoJS.SHA256(byteArrayToWordArray(b));var d=CryptoJS.lib.CipherParams.create({ciphertext:a,iv:c,key:b});return wordArrayToByteArray(CryptoJS.AES.decrypt(d,b,{iv:c}))}.
+        /// </summary>
+        internal static string AesDecrypt {
+            get {
+                return ResourceManager.GetString("AesDecrypt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to function aesEncrypt(a,b,c){a=byteArrayToWordArray(a),b=CryptoJS.SHA256(byteArrayToWordArray(b)),c=byteArrayToWordArray(c);var d=CryptoJS.AES.encrypt(a,b,{iv:c});return wordArrayToByteArray(d.iv).concat(wordArrayToByteArray(d.ciphertext))}.
+        /// </summary>
+        internal static string AesEncrypt {
+            get {
+                return ResourceManager.GetString("AesEncrypt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to function byteArrayToWordArray(a){for(var b=0,c=0,d=0,e=a.length,f=Array((0|e/4)+(0==e%4?0:1));b&lt;e-e%4;)f[c++]=a[b++]&lt;&lt;24|a[b++]&lt;&lt;16|a[b++]&lt;&lt;8|a[b++];0!=e%4&amp;&amp;(d=a[b++]&lt;&lt;24,1&lt;e%4&amp;&amp;(d|=a[b++]&lt;&lt;16),2&lt;e%4&amp;&amp;(d|=a[b++]&lt;&lt;8),f[c]=d);var g={};return g.sigBytes=e,g.words=f,g}.
         /// </summary>
         internal static string ByteArrayToWordArray {
