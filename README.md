@@ -1,4 +1,4 @@
-# CrappyPrizm
+# CrappyPrizm [![NuGet][badge]][nuget]
 
 Library for working with the pseudo-cryptocurrency PRIZM. Designed specifically for unlucky developers forced to face this sh*t
 
@@ -49,12 +49,13 @@ transactionEndpoint = client.Get<TransactionEndpoint>();
 // Getting all transactions for the specified wallet
 IAsyncEnumerable<Transaction> transactions = transactionEndpoint.GetTransactionsAsync("PRIZM-TE8N-B3VM-JJQH-5NYJB");
 
-// Funds' transafer
+// Funds' transfer
 Transaction transaction = await transactionEndpoint.SendAsync("sender's secret phrase", "recipient's public key", 42);
 
 // Transferring all funds to another wallet
 transaction = await transactionEndpoint.SendAllAsync("sender's secret phrase", "recipient's public key");
 ```
 
-
+[nuget]: https://www.nuget.org/packages/CrappyPrizm/ 
+[badge]: https://img.shields.io/nuget/v/CrappyPrizm
 [crappy-repo]: https://github.com/prizmspace/PrizmCore
