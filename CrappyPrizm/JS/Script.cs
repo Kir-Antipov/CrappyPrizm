@@ -1,26 +1,33 @@
-﻿namespace CrappyPrizm.JS
+﻿using System.Linq;
+using System.Resources;
+using System.Collections;
+using System.Globalization;
+using System.Collections.Generic;
+
+namespace CrappyPrizm.JS
 {
     internal class Script
     {
         #region Var
         public string Name { get; }
-        public bool Initialized { get; }
+
+        public static IEnumerable<Script> All
+        {
+            get
+            {
+                ResourceManager resources = new ResourceManager(typeof(Resources.Scripts));
+                ResourceSet resourceSet = resources.GetResourceSet(CultureInfo.InvariantCulture, true, true);
+                return resourceSet.Cast<DictionaryEntry>().Select(x => new Script(x.Key.ToString()));
+            }
+        }
         #endregion
 
         #region Init
-        public Script(string name, bool initialized)
-        {
-            Name = name;
-            Initialized = initialized;
-        }
-
-        public Script(string name) : this(name, false) { }
+        public Script(string name) => Name = name;
         #endregion
 
         #region Functions
         public static implicit operator Script(string name) => new Script(name);
-
-        public Script GetInitialized() => new Script(Name, true);
 
         public string? GetScript() => Resources.Scripts.ResourceManager.GetString(Name);
 

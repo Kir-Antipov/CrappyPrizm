@@ -22,5 +22,7 @@ namespace CrappyPrizm.JS
                 value = engine.GetValue(value, path[i]);
             return value;
         }
+
+        public static JsValue CreateValue(this JSEngine engine, object value) => JsValue.FromObject(engine, value);
     }
 }

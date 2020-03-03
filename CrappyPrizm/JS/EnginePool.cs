@@ -5,7 +5,7 @@ namespace CrappyPrizm.JS
     internal static class EnginePool
     {
         #region Var
-        private const int Max = 32;
+        private const int Max = 128;
         private static readonly ConcurrentBag<Engine> Engines;
         #endregion
 
@@ -13,7 +13,7 @@ namespace CrappyPrizm.JS
         static EnginePool()
         {
             Engines = new ConcurrentBag<Engine>();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < 8; ++i)
                 Engines.Add(new Engine());
         }
         #endregion
@@ -25,7 +25,16 @@ namespace CrappyPrizm.JS
                 Engines.Add(engine);
         }
 
-        public static Engine Get() => Engines.TryTake(out Engine? engine) ? engine : new Engine();
+        public static Engine Get()
+        {
+            if (Engines.TryTake(out Engine? engine))
+                return engine;
+
+            engine = new Engine();
+            if (Engines.Count < Max)
+                Engines.Add(engine);
+            return engine;
+        }
         #endregion
     }
 }
