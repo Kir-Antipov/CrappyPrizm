@@ -12,7 +12,7 @@
     <PackageTags>prizm fraud api</PackageTags>
     <RepositoryType>git</RepositoryType>
     <Copyright>(c) 2020 Kir_Antipov</Copyright>
-    <Description>Library for working with the pseudo-cryptocurrency PRIZM. Designed specifically for unfortunate developers forced to face this sh*t</Description>
+    <Description>Library for working with the pseudo-cryptocurrency PRIZM. Designed specifically for unlucky developers forced to face this sh*t</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>
