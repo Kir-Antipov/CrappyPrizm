@@ -1,6 +1,10 @@
 ﻿namespace CrappyPrizm.Tools.Crypto
 {
-
+    // This class was ported from a Java class which was ported from C, so it’s full of pearls like "if (x == 0) x = 0;"
+    // Maybe I'll rewrite it one day ¯\_(ツ)_/¯
+    // Maybe
+    // Maybe not
+    // Maybe f*ck yourself
     internal static partial class Curve25519
     {
         #region Var
