@@ -2,7 +2,7 @@
 
 namespace CrappyPrizm.Tools.Crypto
 {
-    public static class IDigestHelper
+    public static class IDigestExtensions
     {
         public static void Update(this IDigest digest, byte[] input) => digest.BlockUpdate(input, 0, input.Length);
 
