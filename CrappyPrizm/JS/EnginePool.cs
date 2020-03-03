@@ -25,16 +25,7 @@ namespace CrappyPrizm.JS
                 Engines.Add(engine);
         }
 
-        public static Engine Get()
-        {
-            if (Engines.TryTake(out Engine? engine))
-                return engine;
-
-            engine = new Engine();
-            if (Engines.Count < Max)
-                Engines.Add(engine);
-            return engine;
-        }
+        public static Engine Get() => Engines.TryTake(out Engine? engine) ? engine : new Engine();
         #endregion
     }
 }
