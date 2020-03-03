@@ -4,7 +4,7 @@ using JSEngine = Jint.Engine;
 
 namespace CrappyPrizm.JS
 {
-    internal static class JSHelpers
+    internal static class JSExtensions
     {
         public static byte[] ToByteArray(this ArrayInstance arrayInstance)
         {
