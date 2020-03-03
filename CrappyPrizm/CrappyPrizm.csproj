@@ -4,6 +4,17 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Authors>Kir_Antipov</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Kir-Antipov/CrappyPrizm</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Kir-Antipov/CrappyPrizm</RepositoryUrl>
+    <PackageTags>prizm fraud api</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <Copyright>(c) 2020 Kir_Antipov</Copyright>
+    <Description>Library for working with the pseudo-cryptocurrency PRIZM. Designed specifically for unfortunate developers forced to face this sh*t</Description>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +37,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Scripts.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
