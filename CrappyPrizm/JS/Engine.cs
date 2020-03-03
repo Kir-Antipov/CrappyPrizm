@@ -9,9 +9,9 @@ namespace CrappyPrizm.JS
     internal class Engine : IDisposable
     {
         #region Var
-        private static readonly JSProgram JSProgram;
+        private readonly JSEngine JSEngine;
 
-        private readonly JSEngine JSEngine = new JSEngine();
+        private static readonly JSProgram JSProgram;
         #endregion
 
         #region Init
